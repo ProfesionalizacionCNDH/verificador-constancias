@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Verificación de Constancias</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; background-color: #f9f9f9; }
+    .container { max-width: 500px; margin: auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, button { width: 100%; padding: 1rem; margin-top: 1rem; font-size: 1rem; }
+    .result { margin-top: 1rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Verificación de Constancia</h2>
+    <p>Ingresa el código de verificación que aparece en tu constancia:</p>
+    <input type="text" id="codigoInput" placeholder="Ejemplo: ABC123">
+    <button onclick="verificarCodigo()">Verificar</button>
+    <div class="result" id="resultado"></div>
+  </div>
+
+  <script>
+    // Aquí defines los códigos válidos y la información asociada
+    const constancias = {
+      "ABC123": { nombre: "Juan Pérez", curso: "Curso de Python", fecha: "20/04/2025" },
+      "XYZ789": { nombre: "Ana López", curso: "Excel Básico", fecha: "18/04/2025" },
+      "MNO456": { nombre: "Luis Gómez", curso: "HTML y CSS", fecha: "15/04/2025" }
+    };
+
+    function verificarCodigo() {
+      const input = document.getElementById("codigoInput").value.trim().toUpperCase();
+      const resultado = document.getElementById("resultado");
+
+      if (constancias[input]) {
+        const datos = constancias[input];
+        resultado.innerHTML = `✅ Constancia válida<br>Nombre: ${datos.nombre}<br>Curso: ${datos.curso}<br>Fecha: ${datos.fecha}`;
+        resultado.style.color = "green";
+      } else {
+        resultado.innerHTML = "❌ Código no encontrado. Verifica que esté bien escrito.";
+        resultado.style.color = "red";
+      }
+    }
+  </script>
+</body>
+</html>
