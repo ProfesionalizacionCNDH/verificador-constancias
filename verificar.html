@@ -2,38 +2,83 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Verificación de Constancias</title>
+  <title>Verificación de Constancia</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2rem; background-color: #f9f9f9; }
-    .container { max-width: 500px; margin: auto; background: white; padding: 2rem; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    input, button { width: 100%; padding: 1rem; margin-top: 1rem; font-size: 1rem; }
-    .result { margin-top: 1rem; font-weight: bold; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-size: 1rem;
+    }
+
+    .result {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <h2>Verificación de Constancia</h2>
-    <p>Ingresa el código de verificación que aparece en tu constancia:</p>
-    <input type="text" id="codigoInput" placeholder="Ejemplo: ABC123">
-    <button onclick="verificarCodigo()">Verificar</button>
+    <input type="text" id="codigoInput" placeholder="Ingresa tu código">
+    <button onclick="verificar()">Verificar</button>
     <div class="result" id="resultado"></div>
   </div>
 
   <script>
-    // Aquí defines los códigos válidos y la información asociada
-    const constancias = {
-      "ABC123": { nombre: "Juan Pérez", curso: "Curso de Python", fecha: "20/04/2025" },
-      "XYZ789": { nombre: "Ana López", curso: "Excel Básico", fecha: "18/04/2025" },
-      "MNO456": { nombre: "Luis Gómez", curso: "HTML y CSS", fecha: "15/04/2025" }
-    };
+    let constancias = {};
 
-    function verificarCodigo() {
+    // 👇 Tu hoja de Google Sheets en formato CSV
+    const sheetUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQoDq0e4kkluS5E3ZGurRRfE4dix-EfLH9iTzE6yJ8I543U1MvQAvi5m3W8KOUCIulvSnHeDLU8FV4M/pub?output=csv';
+
+    fetch(sheetUrl)
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1); // Ignora encabezado
+        rows.forEach(row => {
+          const [codigo, nombre, curso, fecha] = row.split(',');
+          if (codigo) {
+            constancias[codigo.trim().toUpperCase()] = {
+              nombre: nombre?.trim(),
+              curso: curso?.trim(),
+              fecha: fecha?.trim()
+            };
+          }
+        });
+      });
+
+    function verificar() {
       const input = document.getElementById("codigoInput").value.trim().toUpperCase();
       const resultado = document.getElementById("resultado");
 
       if (constancias[input]) {
         const datos = constancias[input];
-        resultado.innerHTML = `✅ Constancia válida<br>Nombre: ${datos.nombre}<br>Curso: ${datos.curso}<br>Fecha: ${datos.fecha}`;
+        resultado.innerHTML = `✅ <strong>Constancia válida</strong><br>
+          <b>Nombre:</b> ${datos.nombre}<br>
+          <b>Curso:</b> ${datos.curso}<br>
+          <b>Fecha:</b> ${datos.fecha}`;
         resultado.style.color = "green";
       } else {
         resultado.innerHTML = "❌ Código no encontrado. Verifica que esté bien escrito.";
